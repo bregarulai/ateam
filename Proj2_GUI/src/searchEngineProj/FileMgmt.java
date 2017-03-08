@@ -2,31 +2,73 @@ package searchEngineProj;
 
 import java.util.Scanner;
 import javax.swing.JFileChooser;
-import javax.swing.JOptionPane;
 import java.io.*;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Date;
 import javax.swing.UIManager;
 
 public class FileMgmt {    
     // default constructor
     public FileMgmt() throws IOException {         
+    }   
+    
+    // Persistant data: Array List to hold the persistant file data 
+    private static ArrayList<String> persistantFilePathArray = new ArrayList<>();
+    private static ArrayList<String> displayFilePathArray = new ArrayList<>();
+    
+    // Persistant data: makes a string for saving to the new file that saves the persistant data
+    public static String toString (String s, long l) {
+        String line = "Path: " + s + "\t Date stamp: " + l;        
+        return line;
     }
     
-    private final static String FILE = "../NewFile.txt";
-    private static List<FileMgmt> filePathCollection = new ArrayList<FileMgmt>();   // create ArrayList to hold each file path selected from JFileChooser
-    private String path;
-    Date dateObject;
-    
-    public void File ( String path, Date date ) {
-        dateObject = new Date();
-        this.path = path;
+    // Persistant data: initialization block 
+    //                  1) open file if it exists  
+    //                  2) create file if it does not exists
+    //                  3) saves data into displayFilepathArray List (for display in mainGUI)
+    static final String PERSISTANT = "Persistant.txt";
+    static public Path persistantFilePath = Paths.get(PERSISTANT);
+    static public File persistantFile = persistantFilePath.toFile();
+    static {
+        System.err.println("Start of static init block");
+        // 1 and 2) open file if it exists, create one if it does not
+        try 
+        {
+            if (Files.notExists(persistantFilePath))  
+            {
+                System.out.println("Creating new file");
+                Files.createFile(persistantFilePath);
+            }
+        }
+        catch (IOException e) 
+        {
+            System.err.println("Static Initialization Block, IOException: " + e);
+        }
+
+        // 3) saves data into displayFilepathArray List (for display in mainGUI) (this saves FROM persistant.txt TO array list)             
+        System.err.println("Reading data file:"); 
+        try ( Scanner in = new Scanner(
+                           new File(PERSISTANT)))
+        {
+            // if the file is not null, save to ArrayList
+            if ( in != null)  
+            {
+                while ( in.hasNext() )     
+                {
+                    displayFilePathArray.add( in.nextLine() );             
+                }
+                in.close();
+            }                                                       // NEED TO DO NEXT: make sure this displays in maintenaceGUI                  
+        }
+        catch (Exception e)
+        {
+            System.err.println("Error Reading Persistant File. " + e);
+        }
     }
-    	///////  FILE MAINTENANCE METHODS  ///////  
 	
     // Add sourceFile to the targetIndexFiles
     public void addFileToIndex()  throws IOException {  
@@ -37,46 +79,58 @@ public class FileMgmt {
         } catch (Exception e) {
             System.out.println("I guess you're stuck with Java's default look and feel");
         }
-                            
+        
+        // open a window to choose a file (REQUIRES: import javax.swing.JFileChooser;)
         JFileChooser fileChooser = new JFileChooser();
         if (fileChooser.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
-
-            //get selected file, store path in a string
+            
+            //get selected file, store path and date in a string
             File file = fileChooser.getSelectedFile();
             Scanner selectedFile = new Scanner(file);
             String selectedFilePath = file.getCanonicalPath();
-            //filePathCollection.add(file);                   
+            Date dateOfFile = new Date();
+            long selectedFiledate = dateOfFile.getTime();               // boolean setLastModified(long time)
             
-            // create a file wrapper for new text file, create a PrintWriter Object for output
-            File output = new File("NewlyCreatedFile.txt");
-            PrintWriter createdFile = new PrintWriter(output);
-            System.out.println(output.getAbsoluteFile());
+            // Persistant data: adds file path and date to ArrayList
+            persistantFilePathArray.add(persistantFilePathArray.size(), toString(selectedFilePath, selectedFiledate));         
+            displayFilePathArray.add(displayFilePathArray.size(), toString(selectedFilePath, selectedFiledate));
             
-//            Date dateObject = new Date();            
-//            filePathCollection.add( new File(filePath, dateObject) );   // suppose to add path to a List collection (working off of Person.java)
-//          
+            // Persistant data: if the ArrayList is not empty, save each line of data to file
+            if ( persistantFilePathArray != null ) {
+                for (Iterator<String> iterator = persistantFilePathArray.iterator(); iterator.hasNext();) {
+                    String next = iterator.next();
 
-            displayFiles(selectedFilePath);            // display all the files to console (goal is to have the files displayed in maintGUI            
-            
-            
-            // save the text in selectedFile line by line to createdFile
-            while (selectedFile.hasNext() ) {
-                String line = selectedFile.nextLine();
-                createdFile.append(line);                     // this writes to file, but not line by line.
-                System.out.println(line);                
+                    // save data back to PERSISTANT file with file writer
+                    try ( PrintWriter out = new PrintWriter(
+                                            new BufferedWriter(
+                                            new FileWriter(PERSISTANT, true))))        // delete ", true" (true appends files) to replace file with new array list
+                    {
+                        out.println(next);
+                    }
+                    catch (IOException e)
+                    {
+                        System.err.println("IOEXCEPTION: " + e);
+                    }
+                }
+                selectedFile.close();
             }
-            selectedFile.close();
-            createdFile.close();
+        
         }
-        else {
-            JOptionPane.showMessageDialog(null, "No file selected.", 
-                "Abort", JOptionPane.OK_OPTION); 
+        /////// TESTING: Display both array lists size and data   /////////
+        System.out.println("persistant array........................");
+        System.out.println(persistantFilePathArray.size());
+        for (Iterator<String> it = persistantFilePathArray.iterator(); it.hasNext();) {
+            String persistantFilePathArray = it.next();
+            System.out.println(persistantFilePathArray);
         }
-            
-//			JOptionPane.showMessageDialog(null, "Operation not yet available", 
-//					"Temporaty Message", JOptionPane.OK_OPTION); 
-    }
-    
+        System.out.println("display array...........................");
+        System.out.println(displayFilePathArray.size());
+        for (Iterator<String> it = displayFilePathArray.iterator(); it.hasNext();) {
+            String displayFilePathArray = it.next();
+            System.out.println(displayFilePathArray);
+        }
+    }        
+     
     // Remove a file from targetIndexFiles
     public void removeFileFromIndex() {        
     }
@@ -96,22 +150,11 @@ public class FileMgmt {
     // write file path to display in maintenance window
     public void displayFiles(String s) {   
         
-        for (int i = 0; i < filePathCollection.size() ; i++) {
-            System.out.println(filePathCollection.get(i));            
-        }
-        String[] filePathArray = new String[]{s};
-        for (String e: filePathArray) {
-            System.out.println(e);                      // temporary console output for testing
-        }
-//        for (Iterator<String> it = filePathCollection.iterator(); it.hasNext();) {
-//            String e = it.next();
-//            System.out.println(e);                      // temporary console output for testing
-//        }
     }
     
     // clearing files for new search data
     // note: this will also need to clear the search results in the Search Window
-    public void removeFileList() {        
+    public void removeFileList(String s) {        
     }
-    
-}
+
+} // end of FileMgmt class

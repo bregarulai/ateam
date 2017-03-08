@@ -12,6 +12,5 @@ public class SearchEngine extends JFrame {
 	public static void main ( String[] args ) {
         
 		UserForm testGui = new UserForm();
-		//testGui.setVisible(true);
 	}
 }
