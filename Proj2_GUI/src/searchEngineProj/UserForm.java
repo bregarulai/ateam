@@ -8,9 +8,32 @@ package searchEngineProj;
 
 import java.awt.*;
 import javax.swing.*;
-import javax.swing.border.EmptyBorder;     
+import javax.swing.border.EmptyBorder;
+import java.io.*;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
-public class UserForm extends JFrame {
+public class UserForm extends JFrame  {
+    // initialization block: opens persistance data and loads into memory
+    // The static block only gets called once, when the class itself is initialized.
+    static {
+        // this File Object needs to 1) move to UserForm; 2) put into an initiation block
+        //      3) check if it exists 4) make a file if it does not
+        try {
+            File file = new File("Output.txt");
+            if ( !file.exists() ) {
+                // create file 
+                PrintWriter newFile = new PrintWriter(
+                                       new BufferedWriter(
+                                       new FileWriter(file)));
+            }
+        }catch (IOException e) {
+            System.out.print(e);
+        }
+        
+
+
+    }
 	
 	JLabel title, searchItem, numberOfFiles, ouputTitle, output;
 	JTextField input;

@@ -7,82 +7,111 @@ import java.io.*;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Date;
+import javax.swing.UIManager;
 
-public class FileMgmt {
-	public String filePath;
+public class FileMgmt {    
     // default constructor
-    public FileMgmt() throws IOException { 
-        // read the index data from a file at startup into memory
-
+    public FileMgmt() throws IOException {         
     }
     
+    private final static String FILE = "../NewFile.txt";
+    private static List<FileMgmt> filePathCollection = new ArrayList<FileMgmt>();   // create ArrayList to hold each file path selected from JFileChooser
+    private String path;
+    Date dateObject;
+    
+    public void File ( String path, Date date ) {
+        dateObject = new Date();
+        this.path = path;
+    }
     	///////  FILE MAINTENANCE METHODS  ///////  
 	
     // Add sourceFile to the targetIndexFiles
-    public void addFileToIndex()  throws IOException {
+    public void addFileToIndex()  throws IOException {  
+        
+        // set look and feel to match native system UI
+        try {
+            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+        } catch (Exception e) {
+            System.out.println("I guess you're stuck with Java's default look and feel");
+        }
                             
         JFileChooser fileChooser = new JFileChooser();
-        if (fileChooser.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {                               
+        if (fileChooser.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
 
-            //get selected file, store path in a string, call method to write path to Maint. window
+            //get selected file, store path in a string
             File file = fileChooser.getSelectedFile();
-            filePath = file.getPath();
-            writeFileToWindow(filePath);                   // this method is below, has not been created yet
+            Scanner selectedFile = new Scanner(file);
+            String selectedFilePath = file.getCanonicalPath();
+            //filePathCollection.add(file);                   
             
-            // get new file and save it in an array for indexing
-            saveFilePathForSearching(filePath);            // this method is below, has not been created yet
+            // create a file wrapper for new text file, create a PrintWriter Object for output
+            File output = new File("NewlyCreatedFile.txt");
+            PrintWriter createdFile = new PrintWriter(output);
+            System.out.println(output.getAbsoluteFile());
+            
+//            Date dateObject = new Date();            
+//            filePathCollection.add( new File(filePath, dateObject) );   // suppose to add path to a List collection (working off of Person.java)
+//          
 
-            // create target file and see if it exists
-            File output = new File("Output.txt");
-            System.out.println(output.getPath());
-            // 
-            PrintWriter copyFile = new PrintWriter(
-                                   new BufferedWriter(
-                                   new FileWriter(output)));
+            displayFiles(selectedFilePath);            // display all the files to console (goal is to have the files displayed in maintGUI            
             
-            // FOR TESTING: create a Scanner for the file this is for printing to the console
-            Scanner input = new Scanner(file);
-            while (input.hasNext() ) {
-                String line = input.nextLine();
+            
+            // save the text in selectedFile line by line to createdFile
+            while (selectedFile.hasNext() ) {
+                String line = selectedFile.nextLine();
+                createdFile.append(line);                     // this writes to file, but not line by line.
                 System.out.println(line);                
             }
-            input.close();
+            selectedFile.close();
+            createdFile.close();
         }
         else {
             JOptionPane.showMessageDialog(null, "No file selected.", 
-                "Abort", JOptionPane.OK_OPTION);
+                "Abort", JOptionPane.OK_OPTION); 
         }
             
 //			JOptionPane.showMessageDialog(null, "Operation not yet available", 
-//					"Temporaty Message", JOptionPane.OK_OPTION);
+//					"Temporaty Message", JOptionPane.OK_OPTION); 
     }
     
     // Remove a file from targetIndexFiles
-    public void removeFileFromIndex() {
-        
+    public void removeFileFromIndex() {        
     }
     
     // Read targetIndexFiles
-    public void readIndexFile() {
-        
+    public void readIndexFile() {        
     }
     
     // save file in array for searching with InvertedIndex.java
     public void saveFilePathForSearching(String s) {
+//        ArrayList<String> FileList = new ArrayList<String>();
+//        fileList 
 //        File[] fileListing = s;  // save the list of files in an array
 //        fileListing.listFiles() //File[] listFiles() Returns an array of abstract pathnames denoting the files in the directory denoted by this abstract pathname.
     }
     
     // write file path to display in maintenance window
-    public void writeFileToWindow(String s) {        
-        System.out.println(s);                      // temporary console output for testing
+    public void displayFiles(String s) {   
+        
+        for (int i = 0; i < filePathCollection.size() ; i++) {
+            System.out.println(filePathCollection.get(i));            
+        }
+        String[] filePathArray = new String[]{s};
+        for (String e: filePathArray) {
+            System.out.println(e);                      // temporary console output for testing
+        }
+//        for (Iterator<String> it = filePathCollection.iterator(); it.hasNext();) {
+//            String e = it.next();
+//            System.out.println(e);                      // temporary console output for testing
+//        }
     }
     
     // clearing files for new search data
     // note: this will also need to clear the search results in the Search Window
-    public void removeFileList() {
-        
+    public void removeFileList() {        
     }
     
 }

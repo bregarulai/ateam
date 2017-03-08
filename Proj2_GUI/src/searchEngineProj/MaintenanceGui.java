@@ -66,12 +66,13 @@ public class MaintenanceGui {
 		centerPanel.setPreferredSize(new Dimension(850, 400));
 		centerPanel.setLayout(new BorderLayout());        
 
-        filePath = new JLabel("fileaddress");        // For testing: lable to display the path of the file for searching JTextArea, JTable, JList
+        filePath = new JLabel();                            // For testing: lable to display the path of the file for searching JTextArea, JTable, JList
+        //filePath = writeFileToWindow();
         
 		TableModel myTableModel = new TableModel();
 		JTable table = new JTable(myTableModel);
 		table.getTableHeader().setFont(regularFont);
-		table.setFillsViewportHeight(true);	         // to make the table expand the whole pane
+		table.setFillsViewportHeight(true);	                // to make the table expand the whole pane
 		
 		centerPanel.add(table, BorderLayout.CENTER);
 		centerPanel.add(table.getTableHeader(), BorderLayout.NORTH);
