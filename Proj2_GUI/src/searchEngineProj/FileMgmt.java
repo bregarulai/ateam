@@ -17,7 +17,7 @@ public class FileMgmt {
     }   
     
     // Persistant data: Array List to hold the persistant file data 
-    private static ArrayList<String> persistantFilePathArray = new ArrayList<>();
+    static ArrayList<String> persistantFilePathArray = new ArrayList<>();
     private static ArrayList<String> displayFilePathArray = new ArrayList<>();
     
     // Persistant data: makes a string for saving to the new file that saves the persistant data
@@ -31,10 +31,10 @@ public class FileMgmt {
     //                  2) create file if it does not exists
     //                  3) saves data into displayFilepathArray List (for display in mainGUI)
     static final String PERSISTANT = "Persistant.txt";
-    static public Path persistantFilePath = Paths.get(PERSISTANT);
-    static public File persistantFile = persistantFilePath.toFile();
+    static Path persistantFilePath = Paths.get(PERSISTANT);
+    static File persistantFile = persistantFilePath.toFile();
     static {
-        System.err.println("Start of static init block");
+        System.err.println("Start of static init block");                      // TESTING with Console printing
         // 1 and 2) open file if it exists, create one if it does not
         try 
         {
@@ -49,6 +49,27 @@ public class FileMgmt {
             System.err.println("Static Initialization Block, IOException: " + e);
         }
 
+//        // 3) saves data into displayFilepathArray List (for display in mainGUI) (this saves FROM persistant.txt TO array list)             
+//        System.err.println("Reading data file:"); 
+//        try ( Scanner in = new Scanner(
+//                           new File(PERSISTANT)))
+//        {
+//            // if the file is not null, save to ArrayList
+//            if ( in != null)  
+//            {
+//                while ( in.hasNext() )     
+//                {
+//                    persistantFilePathArray.add( in.nextLine() );             
+//                }
+//                in.close();
+//            }                                                       // NEED TO DO NEXT: make sure this displays in maintenaceGUI                  
+//        }
+//        catch (Exception e)
+//        {
+//            System.err.println("Error Reading Persistant File. " + e);
+//        }
+
+        
         // 3) saves data into displayFilepathArray List (for display in mainGUI) (this saves FROM persistant.txt TO array list)             
         System.err.println("Reading data file:"); 
         try ( Scanner in = new Scanner(
@@ -61,12 +82,20 @@ public class FileMgmt {
                 {
                     displayFilePathArray.add( in.nextLine() );             
                 }
-                in.close();
+                in.close();                                         // IMPORTANT!!! <----DELETE ALL INFO IN FILE SO IT IS EMPTY---->
+                                                         // OR, delete file, then create another one
             }                                                       // NEED TO DO NEXT: make sure this displays in maintenaceGUI                  
         }
         catch (Exception e)
         {
             System.err.println("Error Reading Persistant File. " + e);
+        }
+        /////// TESTING: Display both array lists size and data   /////////
+        System.err.println("display array prior to adding new files........................");
+        System.out.println(displayFilePathArray.size());
+        for (Iterator<String> it = displayFilePathArray.iterator(); it.hasNext();) {
+            String show = it.next();
+            System.out.println(show);
         }
     }
 	
@@ -103,7 +132,7 @@ public class FileMgmt {
                     // save data back to PERSISTANT file with file writer
                     try ( PrintWriter out = new PrintWriter(
                                             new BufferedWriter(
-                                            new FileWriter(PERSISTANT, true))))        // delete ", true" (true appends files) to replace file with new array list
+                                            new FileWriter(persistantFile, true))))        // delete ", true" (true appends files) to replace file with new array list
                     {
                         out.println(next);
                     }
@@ -117,17 +146,17 @@ public class FileMgmt {
         
         }
         /////// TESTING: Display both array lists size and data   /////////
-        System.out.println("persistant array........................");
+        System.err.println("persistant array........................");
         System.out.println(persistantFilePathArray.size());
         for (Iterator<String> it = persistantFilePathArray.iterator(); it.hasNext();) {
-            String persistantFilePathArray = it.next();
-            System.out.println(persistantFilePathArray);
+            String persistant = it.next();
+            System.out.println(persistant);
         }
-        System.out.println("display array...........................");
+        System.err.println("display array...........................");
         System.out.println(displayFilePathArray.size());
         for (Iterator<String> it = displayFilePathArray.iterator(); it.hasNext();) {
-            String displayFilePathArray = it.next();
-            System.out.println(displayFilePathArray);
+            String display = it.next();
+            System.out.println(display);
         }
     }        
      
