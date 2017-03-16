@@ -1,3 +1,9 @@
+/** @author Flavio Aquino, Sharon Tender, Frank Castillo,
+ * Vinny Macri March 2017
+ * 
+ *  Class responsible for handling file I/O
+ */
+
 package searchEngineProj;
 
 import java.util.Scanner;
@@ -17,8 +23,7 @@ public class FileMgmt {
     }   
     
     // Persistant data: Array List to hold the persistant file data 
-    static ArrayList<String> persistantFilePathArray = new ArrayList<>();
-    private static ArrayList<String> displayFilePathArray = new ArrayList<>();
+    private static ArrayList<String> persistantFilePathArray = new ArrayList<>();
     
     // Persistant data: makes a string for saving to the new file that saves the persistant data
     public static String toString (String s, long l) {
@@ -30,76 +35,38 @@ public class FileMgmt {
     //                  1) open file if it exists  
     //                  2) create file if it does not exists
     //                  3) saves data into displayFilepathArray List (for display in mainGUI)
-    static final String PERSISTANT = "Persistant.txt";
-    static Path persistantFilePath = Paths.get(PERSISTANT);
-    static File persistantFile = persistantFilePath.toFile();
+    static final String PERSISTANT = "./Persistant.txt";
+    static final Path persistantFilePath = Paths.get(PERSISTANT);
+    static final File PERSISTANT_FILE = persistantFilePath.toFile();
     static {
-        System.err.println("Start of static init block");                      // TESTING with Console printing
         // 1 and 2) open file if it exists, create one if it does not
-        try 
-        {
-            if (Files.notExists(persistantFilePath))  
-            {
-                System.out.println("Creating new file");
+        try {
+            if (Files.notExists(persistantFilePath))  {
                 Files.createFile(persistantFilePath);
             }
         }
-        catch (IOException e) 
-        {
+        catch (IOException e)  {
             System.err.println("Static Initialization Block, IOException: " + e);
         }
 
-//        // 3) saves data into displayFilepathArray List (for display in mainGUI) (this saves FROM persistant.txt TO array list)             
-//        System.err.println("Reading data file:"); 
-//        try ( Scanner in = new Scanner(
-//                           new File(PERSISTANT)))
-//        {
-//            // if the file is not null, save to ArrayList
-//            if ( in != null)  
-//            {
-//                while ( in.hasNext() )     
-//                {
-//                    persistantFilePathArray.add( in.nextLine() );             
-//                }
-//                in.close();
-//            }                                                       // NEED TO DO NEXT: make sure this displays in maintenaceGUI                  
-//        }
-//        catch (Exception e)
-//        {
-//            System.err.println("Error Reading Persistant File. " + e);
-//        }
-
-        
-        // 3) saves data into displayFilepathArray List (for display in mainGUI) (this saves FROM persistant.txt TO array list)             
-        System.err.println("Reading data file:"); 
+        // 3) saves data into displayFilepathArray List (for display in mainGUI) 
+        //    this saves FROM persistant.txt TO array list          
         try ( Scanner in = new Scanner(
-                           new File(PERSISTANT)))
-        {
+                           new File(PERSISTANT)))  {
             // if the file is not null, save to ArrayList
-            if ( in != null)  
-            {
-                while ( in.hasNext() )     
-                {
-                    displayFilePathArray.add( in.nextLine() );             
+            if ( in != null) {
+                while ( in.hasNext() )    {
+                    persistantFilePathArray.add( in.nextLine() );             
                 }
-                in.close();                                         // IMPORTANT!!! <----DELETE ALL INFO IN FILE SO IT IS EMPTY---->
-                                                         // OR, delete file, then create another one
-            }                                                       // NEED TO DO NEXT: make sure this displays in maintenaceGUI                  
-        }
-        catch (Exception e)
-        {
+                in.close();
+            }                                                                         
+        } catch (Exception e)   {
             System.err.println("Error Reading Persistant File. " + e);
-        }
-        /////// TESTING: Display both array lists size and data   /////////
-        System.err.println("display array prior to adding new files........................");
-        System.out.println(displayFilePathArray.size());
-        for (Iterator<String> it = displayFilePathArray.iterator(); it.hasNext();) {
-            String show = it.next();
-            System.out.println(show);
         }
     }
 	
-    // Add sourceFile to the targetIndexFiles
+    // MaintenanceGui Button event "Add File"
+    // This will add a selected file to the ArrayList to be searched
     public void addFileToIndex()  throws IOException {  
         
         // set look and feel to match native system UI
@@ -122,44 +89,22 @@ public class FileMgmt {
             
             // Persistant data: adds file path and date to ArrayList
             persistantFilePathArray.add(persistantFilePathArray.size(), toString(selectedFilePath, selectedFiledate));         
-            displayFilePathArray.add(displayFilePathArray.size(), toString(selectedFilePath, selectedFiledate));
             
-            // Persistant data: if the ArrayList is not empty, save each line of data to file
+            // Persistant data: if the ArrayList is not empty, save selected file to persistant
+            //    note: "true" appends data to files, without "true" it will overwrite
             if ( persistantFilePathArray != null ) {
-                for (Iterator<String> iterator = persistantFilePathArray.iterator(); iterator.hasNext();) {
-                    String next = iterator.next();
-
-                    // save data back to PERSISTANT file with file writer
-                    try ( PrintWriter out = new PrintWriter(
-                                            new BufferedWriter(
-                                            new FileWriter(persistantFile, true))))        // delete ", true" (true appends files) to replace file with new array list
-                    {
-                        out.println(next);
-                    }
-                    catch (IOException e)
-                    {
-                        System.err.println("IOEXCEPTION: " + e);
-                    }
+                try ( PrintWriter out = new PrintWriter(
+                                        new BufferedWriter(
+                                        new FileWriter(PERSISTANT_FILE, true)))) {
+                    out.println(toString(selectedFilePath, selectedFiledate));           
+                } catch (IOException e) {
+                    System.err.println("IOEXCEPTION: " + e);
                 }
-                selectedFile.close();
             }
+            selectedFile.close();
+        }
+    }  // end of Button event "Add File"      
         
-        }
-        /////// TESTING: Display both array lists size and data   /////////
-        System.err.println("persistant array........................");
-        System.out.println(persistantFilePathArray.size());
-        for (Iterator<String> it = persistantFilePathArray.iterator(); it.hasNext();) {
-            String persistant = it.next();
-            System.out.println(persistant);
-        }
-        System.err.println("display array...........................");
-        System.out.println(displayFilePathArray.size());
-        for (Iterator<String> it = displayFilePathArray.iterator(); it.hasNext();) {
-            String display = it.next();
-            System.out.println(display);
-        }
-    }        
-     
     // Remove a file from targetIndexFiles
     public void removeFileFromIndex() {        
     }
@@ -170,15 +115,10 @@ public class FileMgmt {
     
     // save file in array for searching with InvertedIndex.java
     public void saveFilePathForSearching(String s) {
-//        ArrayList<String> FileList = new ArrayList<String>();
-//        fileList 
-//        File[] fileListing = s;  // save the list of files in an array
-//        fileListing.listFiles() //File[] listFiles() Returns an array of abstract pathnames denoting the files in the directory denoted by this abstract pathname.
     }
     
     // write file path to display in maintenance window
-    public void displayFiles(String s) {   
-        
+    public void displayFiles(String s) {           
     }
     
     // clearing files for new search data
