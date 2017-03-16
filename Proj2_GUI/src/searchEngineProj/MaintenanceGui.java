@@ -47,19 +47,7 @@ public class MaintenanceGui {
 		title.setFont(titleFont);
 		title.setHorizontalAlignment(JLabel.CENTER);
 		northPanel.add(title, BorderLayout.CENTER);
-		
-        
-        
-        
-        
-        
-        
-        //////  THE AREA BELOW IS WHERE I AM WORKING  /////////        
-        
-        
-        
-
-        
+		        
         // panel for the search file names and status
 		JPanel centerPanel = new JPanel();
 		centerPanel.setBackground(Color.WHITE);
@@ -79,22 +67,6 @@ public class MaintenanceGui {
 		contentPane.add(centerPanel, BorderLayout.CENTER);
         centerPanel.add(filePath, BorderLayout.WEST);       // WEST was the best way to get it to show up
 
-        
-        
-        
-        
-        
-        
-        
-        //////  THE AREA ABOVE IS WHERE I AM WORKING  /////////        
-        
-        
-        
-        
-        
-        
-
-        
 		// to create the south panel
 		JPanel southPanel = new JPanel();
 		southPanel.setBackground(Color.BLUE);
