@@ -1,4 +1,4 @@
-package searchEngineProj;
+package searchEngineProj.searchUtils;
 
 
 //* GuiFrame1 program.
@@ -13,6 +13,7 @@ package searchEngineProj;
 
 //package com.hcc.mywork;
 
+import searchEngineProj.*;
 	import java.awt.FlowLayout;
 	import java.awt.event.*;
 	import javax.swing.JButton;

@@ -10,11 +10,16 @@ package searchEngineProj;
 import java.awt.*;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
+import java.io.*;
+import searchEngineProj.FileMgmt.*;
+import javax.swing.JFileChooser;
+import java.util.Scanner;
+
 
 public class MaintenanceGui {
-	JLabel title, numberOfFiles;
+	JLabel title, numberOfFiles, filePath;     // filePath added to display files being searched
 	JButton addFile, updateFile, removeFile;
-	JTable table;
+	public JTable table;                       // public for other classes to acces it?
 	
 	public MaintenanceGui() {
 		Font titleFont = new Font("Serif", Font.BOLD, 46);
@@ -28,7 +33,7 @@ public class MaintenanceGui {
 		myFrame.setMinimumSize(new Dimension(950, 650));
 		myFrame.setVisible(true);
 		
-		// a container to place the panels in it
+		// to create a container to place the north panel into for Heading
 		Container contentPane = myFrame.getContentPane();
 		JPanel northPanel = new JPanel();
 		northPanel.setBackground(Color.BLUE);
@@ -42,22 +47,25 @@ public class MaintenanceGui {
 		title.setFont(titleFont);
 		title.setHorizontalAlignment(JLabel.CENTER);
 		northPanel.add(title, BorderLayout.CENTER);
-
-		
+		        
+        // panel for the search file names and status
 		JPanel centerPanel = new JPanel();
 		centerPanel.setBackground(Color.WHITE);
 		centerPanel.setPreferredSize(new Dimension(850, 400));
-		
+		centerPanel.setLayout(new BorderLayout());        
+
+        filePath = new JLabel();                            // For testing: lable to display the path of the file for searching JTextArea, JTable, JList
+        //filePath = displayFiles();
+        
 		TableModel myTableModel = new TableModel();
 		JTable table = new JTable(myTableModel);
 		table.getTableHeader().setFont(regularFont);
-		// to make the table expand the whole pane
 		table.setFillsViewportHeight(true);
 		
-		centerPanel.setLayout(new BorderLayout());
 		centerPanel.add(table, BorderLayout.CENTER);
 		centerPanel.add(table.getTableHeader(), BorderLayout.NORTH);
 		contentPane.add(centerPanel, BorderLayout.CENTER);
+        centerPanel.add(filePath, BorderLayout.WEST);       // WEST was the best way to get it to show up
 
 		// to create the south panel
 		JPanel southPanel = new JPanel();
@@ -73,9 +81,16 @@ public class MaintenanceGui {
 		addFile.setFont(regularFont);
 		southPanel.add(addFile);
 		
-		addFile.addActionListener(actionEvent -> {
-			JOptionPane.showMessageDialog(null, "Operation not yet available", 
-					"Temporaty Message", JOptionPane.OK_OPTION);
+        // button event adds a file to Search Engine
+		addFile.addActionListener(actionEvent -> {  
+            try {
+                FileMgmt addSearchFile = new FileMgmt();
+                addSearchFile.addFileToIndex();
+            } catch (IndexOutOfBoundsException e) {
+                System.err.println("IndexOutOfBoundsException: " + e.getMessage());
+            } catch (IOException e) {
+                System.err.println("Caught IOException: " + e.getMessage());
+            }
 		});
 		
 		updateFile = new JButton("Update Index File");

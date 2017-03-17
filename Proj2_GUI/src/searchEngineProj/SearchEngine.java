@@ -4,15 +4,13 @@
 
 package searchEngineProj;
 
+import java.awt.Window;
 import javax.swing.JFrame;
-
-import searchEngineProj.searchUtils.GUIFrame;
-import searchEngineProj.searchUtils.FileMgmt;
-
+import javax.swing.*;
 
 public class SearchEngine extends JFrame {
 	public static void main ( String[] args ) {
-		GUIFrame frame = new GUIFrame();
-		frame.setVisible(true);
+        
+		UserForm testGui = new UserForm();
 	}
 }
