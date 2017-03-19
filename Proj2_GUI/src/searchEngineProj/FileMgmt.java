@@ -23,7 +23,7 @@ public class FileMgmt {
     }   
     
     // Persistant data: Array List to hold the persistant file data 
-    private static ArrayList<String> persistantFilePathArray = new ArrayList<>();
+    static ArrayList<String> persistantFilePathArray = new ArrayList<>();
     
     // Persistant data: makes a string for saving to the new file that saves the persistant data
     public static String toString (String s, long l) {
@@ -56,12 +56,14 @@ public class FileMgmt {
             // if the file is not null, save to ArrayList
             if ( in != null) {
                 while ( in.hasNext() )    {
-                    persistantFilePathArray.add( in.nextLine() );             
+                    String data = in.nextLine();
+                    persistantFilePathArray.add( data );
+                    System.out.println( data );                           // TESTING PURPOSES
                 }
                 in.close();
             }                                                                         
         } catch (Exception e)   {
-            System.err.println("Error Reading Persistant File. " + e);
+            System.err.println("Error Reading Persistant File: " + e);
         }
     }
 	
@@ -88,7 +90,9 @@ public class FileMgmt {
             long selectedFiledate = dateOfFile.getTime();               // boolean setLastModified(long time)
             
             // Persistant data: adds file path and date to ArrayList
-            persistantFilePathArray.add(persistantFilePathArray.size(), toString(selectedFilePath, selectedFiledate));         
+            String displayString = toString(selectedFilePath, selectedFiledate);
+            int arraySize = persistantFilePathArray.size();
+            persistantFilePathArray.add(arraySize, displayString);         
             
             // Persistant data: if the ArrayList is not empty, save selected file to persistant
             //    note: "true" appends data to files, without "true" it will overwrite
@@ -96,17 +100,18 @@ public class FileMgmt {
                 try ( PrintWriter out = new PrintWriter(
                                         new BufferedWriter(
                                         new FileWriter(PERSISTANT_FILE, true)))) {
-                    out.println(toString(selectedFilePath, selectedFiledate));           
+                    out.println(displayString); 
                 } catch (IOException e) {
                     System.err.println("IOEXCEPTION: " + e);
                 }
             }
+            displayFiles();
             selectedFile.close();
         }
     }  // end of Button event "Add File"      
         
     // Remove a file from targetIndexFiles
-    public void removeFileFromIndex() {        
+    public static void removeFileFromIndex() {                             //int indexOf(Object o) <-- returns an int of the file to remove
     }
     
     // Read targetIndexFiles
@@ -118,7 +123,12 @@ public class FileMgmt {
     }
     
     // write file path to display in maintenance window
-    public void displayFiles(String s) {           
+    public static void displayFiles() {
+        System.out.println("From the displayFile method .......");
+        for (String s: persistantFilePathArray) {
+            //print to gui
+            System.err.println(s);                                          // this is where the data needs to be sent to the gui
+        }
     }
     
     // clearing files for new search data

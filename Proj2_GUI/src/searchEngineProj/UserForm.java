@@ -12,6 +12,7 @@ import javax.swing.border.EmptyBorder;
 import java.io.*;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import searchEngineProj.FileMgmt.*;
 
 public class UserForm extends JFrame  {
 	
