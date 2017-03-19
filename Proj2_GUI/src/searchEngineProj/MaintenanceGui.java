@@ -54,8 +54,8 @@ public class MaintenanceGui {
 		centerPanel.setPreferredSize(new Dimension(850, 400));
 		centerPanel.setLayout(new BorderLayout());        
 
-        filePath = new JLabel();                            // For testing: lable to display the path of the file for searching JTextArea, JTable, JList
-        //filePath = displayFiles();
+        filePath = new JLabel("getfilepaths(string) goes here");                            // For testing: lable to display the path of the file for searching JTextArea, JTable, JList
+        //filePath = "filepath goes here";
         
 		TableModel myTableModel = new TableModel();
 		JTable table = new JTable(myTableModel);
@@ -98,6 +98,10 @@ public class MaintenanceGui {
 		southPanel.add(updateFile);
 		
 		updateFile.addActionListener(actionEvent -> {
+            // call the displayFile method from FileMgmt Class
+            FileMgmt.displayFiles();
+
+            // need to delete this when we have the method working            
 			JOptionPane.showMessageDialog(null, "Operation not yet available",
 					"Temporary Message", JOptionPane.OK_OPTION);
 		});
@@ -107,6 +111,10 @@ public class MaintenanceGui {
 		southPanel.add(removeFile);
 		
 		removeFile.addActionListener(actionEvent -> {
+            // call the remove file method from FileMgmt class
+            FileMgmt.removeFileFromIndex();
+            
+            // need to delete this when we have the method working
 			JOptionPane.showMessageDialog(null, "Operation not yet available",
 					"Temporary Message", JOptionPane.OK_OPTION);
 		});
