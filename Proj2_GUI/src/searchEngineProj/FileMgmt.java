@@ -23,7 +23,7 @@ public class FileMgmt {
     }   
     
     // Persistant data: Array List to hold the persistant file data 
-    static ArrayList<String> persistantFilePathArray = new ArrayList<>();
+    static final ArrayList<String> PERSISTANT_ARRAY = new ArrayList<>();
     
     // Persistant data: makes a string for saving to the new file that saves the persistant data
     public static String toString (String s, long l) {
@@ -36,13 +36,13 @@ public class FileMgmt {
     //                  2) create file if it does not exists
     //                  3) saves data into displayFilepathArray List (for display in mainGUI)
     static final String PERSISTANT = "./Persistant.txt";
-    static final Path persistantFilePath = Paths.get(PERSISTANT);
-    static final File PERSISTANT_FILE = persistantFilePath.toFile();
+    static final Path PERSISTANT_PATH = Paths.get(PERSISTANT);
+    static final File PERSISTANT_FILE = PERSISTANT_PATH.toFile();
     static {
         // 1 and 2) open file if it exists, create one if it does not
         try {
-            if (Files.notExists(persistantFilePath))  {
-                Files.createFile(persistantFilePath);
+            if (Files.notExists(PERSISTANT_PATH))  {
+                Files.createFile(PERSISTANT_PATH);
             }
         }
         catch (IOException e)  {
@@ -57,11 +57,11 @@ public class FileMgmt {
             if ( in != null) {
                 while ( in.hasNext() )    {
                     String data = in.nextLine();
-                    persistantFilePathArray.add( data );
-                    System.out.println( data );                           // TESTING PURPOSES
+                    PERSISTANT_ARRAY.add( data );
                 }
                 in.close();
-            }                                                                         
+            }
+            displayFiles();
         } catch (Exception e)   {
             System.err.println("Error Reading Persistant File: " + e);
         }
@@ -91,12 +91,12 @@ public class FileMgmt {
             
             // Persistant data: adds file path and date to ArrayList
             String displayString = toString(selectedFilePath, selectedFiledate);
-            int arraySize = persistantFilePathArray.size();
-            persistantFilePathArray.add(arraySize, displayString);         
+            int arraySize = PERSISTANT_ARRAY.size();
+            PERSISTANT_ARRAY.add(arraySize, displayString);         
             
             // Persistant data: if the ArrayList is not empty, save selected file to persistant
             //    note: "true" appends data to files, without "true" it will overwrite
-            if ( persistantFilePathArray != null ) {
+            if ( PERSISTANT_ARRAY != null ) {
                 try ( PrintWriter out = new PrintWriter(
                                         new BufferedWriter(
                                         new FileWriter(PERSISTANT_FILE, true)))) {
@@ -111,8 +111,8 @@ public class FileMgmt {
     }  // end of Button event "Add File"      
         
     // Remove a file from targetIndexFiles
-    public static void removeFileFromIndex() {                             //int indexOf(Object o) <-- returns an int of the file to remove
-    }
+    public static void removeFileFromIndex() {                             // Used in the following places: MaintenanceGui class, line 115
+    }                                                                      // int indexOf(Object o) <-- returns an int of the file to remove
     
     // Read targetIndexFiles
     public void readIndexFile() {        
@@ -123,12 +123,18 @@ public class FileMgmt {
     }
     
     // write file path to display in maintenance window
-    public static void displayFiles() {
-        System.out.println("From the displayFile method .......");
-        for (String s: persistantFilePathArray) {
-            //print to gui
-            System.err.println(s);                                          // this is where the data needs to be sent to the gui
+    public static void displayFiles() {                                     // Used in the following places: addFileToIndex(), line 108; 
+        System.out.println("From the displayFile method .......");          //     static initializer, line 64; MaintenanceGui class, line 100
+        for (Iterator<String> it = PERSISTANT_ARRAY.iterator(); it.hasNext();) {
+            String s = it.next();            
+            //print to gui                                                     
+            System.err.println(s);                                          // this is where the file paths/date needs to be sent to the gui
         }
+    }
+    
+    // updates the index to reflect what's currently in the array
+    public static void updateIndex() {
+        
     }
     
     // clearing files for new search data
