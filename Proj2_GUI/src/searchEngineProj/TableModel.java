@@ -4,7 +4,6 @@
 package searchEngineProj;
 
 import javax.swing.table.AbstractTableModel;
-import java.io.IOException;
 
 public class TableModel extends AbstractTableModel{
 	

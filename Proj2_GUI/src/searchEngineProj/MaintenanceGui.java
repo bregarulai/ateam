@@ -7,19 +7,30 @@
 
 package searchEngineProj;
 
-import java.awt.*;
-import javax.swing.*;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Container;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.Font;
+import java.awt.List;
+import java.io.IOException;
+
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JTable;
 import javax.swing.border.EmptyBorder;
-import java.io.*;
-import searchEngineProj.FileMgmt.*;
-import javax.swing.JFileChooser;
-import java.util.Scanner;
 
 
 public class MaintenanceGui {
 	JLabel title, numberOfFiles, filePath;     // filePath added to display files being searched
 	JButton addFile, updateFile, removeFile;
 	public JTable table;                       // public for other classes to acces it?
+	public List fileList;
+	public JFrame myFrame;
 	
 	public MaintenanceGui() {
 		Font titleFont = new Font("Serif", Font.BOLD, 46);
@@ -29,7 +40,7 @@ public class MaintenanceGui {
 		JFrame myFrame = new JFrame();
 		myFrame.setTitle("My Search Engine Maintenance");
 		myFrame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
-		myFrame.setLayout(new BorderLayout());
+		myFrame.getContentPane().setLayout(new BorderLayout());
 		myFrame.setMinimumSize(new Dimension(950, 650));
 		myFrame.setVisible(true);
 		
@@ -48,13 +59,16 @@ public class MaintenanceGui {
 		title.setHorizontalAlignment(JLabel.CENTER);
 		northPanel.add(title, BorderLayout.CENTER);
 		        
-        // panel for the search file names and status
-		JPanel centerPanel = new JPanel();
+        /* panel for the search file names and status
+		List centerPanel = new List();
 		centerPanel.setBackground(Color.WHITE);
 		centerPanel.setPreferredSize(new Dimension(850, 400));
-		centerPanel.setLayout(new BorderLayout());        
+		centerPanel.add("This is item 1");
+		centerPanel.add("This is item 2");
+		//centerPanel.setLayout(new BorderLayout());        
 
-        filePath = new JLabel("getfilepaths(string) goes here");                            // For testing: lable to display the path of the file for searching JTextArea, JTable, JList
+        // filePath = new JLabel("getfilepaths(string) goes here");
+         * // For testing: lable to display the path of the file for searching JTextArea, JTable, JList
         //filePath = "filepath goes here";
         
 		TableModel myTableModel = new TableModel();
@@ -66,7 +80,10 @@ public class MaintenanceGui {
 		centerPanel.add(table.getTableHeader(), BorderLayout.NORTH);
 		contentPane.add(centerPanel, BorderLayout.CENTER);
         centerPanel.add(filePath, BorderLayout.WEST);       // WEST was the best way to get it to show up
-
+		 */
+		
+		
+		
 		// to create the south panel
 		JPanel southPanel = new JPanel();
 		southPanel.setBackground(Color.BLUE);
@@ -99,7 +116,7 @@ public class MaintenanceGui {
 		
 		updateFile.addActionListener(actionEvent -> {
             // call the displayFile method from FileMgmt Class
-            FileMgmt.displayFiles();
+			FileMgmt.displayFiles();
 
             // need to delete this when we have the method working            
 			JOptionPane.showMessageDialog(null, "Operation not yet available",
@@ -130,8 +147,12 @@ public class MaintenanceGui {
 		numberOfFiles.setFont(regularFont);
 		southPanel2.add(numberOfFiles);
 		southPanel.add(southPanel2);
-				
+		
+		fileList = new List();
+		myFrame.getContentPane().add(fileList, BorderLayout.CENTER);
 		myFrame.pack();
+		for (String listVal : FileMgmt.PERSISTENT_ARRAY) {
+			fileList.add(listVal);
+		}
 	}
-	
 }

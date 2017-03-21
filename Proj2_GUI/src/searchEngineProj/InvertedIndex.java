@@ -4,11 +4,6 @@
 
 package searchEngineProj;
 
-import searchEngineProj.searchUtils.*;
-import java.io.*;
-import java.io.IOException;
-import java.lang.*;
-
 public class InvertedIndex  {
     
     // variables: s will change as we work on the methods

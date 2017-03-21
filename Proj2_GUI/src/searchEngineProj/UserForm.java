@@ -6,13 +6,22 @@
 
 package searchEngineProj;
 
-import java.awt.*;
-import javax.swing.*;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Container;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.Font;
+
+import javax.swing.ButtonGroup;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JRadioButton;
+import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
-import java.io.*;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import searchEngineProj.FileMgmt.*;
 
 public class UserForm extends JFrame  {
 	

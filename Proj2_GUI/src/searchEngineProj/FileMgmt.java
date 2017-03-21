@@ -19,11 +19,10 @@ import javax.swing.UIManager;
 
 public class FileMgmt {    
     // default constructor
-    public FileMgmt() throws IOException {         
-    }   
+    public FileMgmt() throws IOException {}   
     
     // Persistant data: Array List to hold the persistant file data 
-    static final ArrayList<String> PERSISTANT_ARRAY = new ArrayList<>();
+    static final ArrayList<String> PERSISTENT_ARRAY = new ArrayList<>();
     
     // Persistant data: makes a string for saving to the new file that saves the persistant data
     public static String toString (String s, long l) {
@@ -35,14 +34,14 @@ public class FileMgmt {
     //                  1) open file if it exists  
     //                  2) create file if it does not exists
     //                  3) saves data into displayFilepathArray List (for display in mainGUI)
-    static final String PERSISTANT = "./Persistant.txt";
-    static final Path PERSISTANT_PATH = Paths.get(PERSISTANT);
-    static final File PERSISTANT_FILE = PERSISTANT_PATH.toFile();
+    static final String PERSISTENT = "./Persistent.txt";
+    static final Path PERSISTENT_PATH = Paths.get(PERSISTENT);
+    static final File PERSISTENT_FILE = PERSISTENT_PATH.toFile();
     static {
         // 1 and 2) open file if it exists, create one if it does not
         try {
-            if (Files.notExists(PERSISTANT_PATH))  {
-                Files.createFile(PERSISTANT_PATH);
+            if (Files.notExists(PERSISTENT_PATH))  {
+                Files.createFile(PERSISTENT_PATH);
             }
         }
         catch (IOException e)  {
@@ -52,12 +51,12 @@ public class FileMgmt {
         // 3) saves data into displayFilepathArray List (for display in mainGUI) 
         //    this saves FROM persistant.txt TO array list          
         try ( Scanner in = new Scanner(
-                           new File(PERSISTANT)))  {
+                           new File(PERSISTENT)))  {
             // if the file is not null, save to ArrayList
             if ( in != null) {
                 while ( in.hasNext() )    {
                     String data = in.nextLine();
-                    PERSISTANT_ARRAY.add( data );
+                    PERSISTENT_ARRAY.add( data );
                 }
                 in.close();
             }
@@ -91,15 +90,15 @@ public class FileMgmt {
             
             // Persistant data: adds file path and date to ArrayList
             String displayString = toString(selectedFilePath, selectedFiledate);
-            int arraySize = PERSISTANT_ARRAY.size();
-            PERSISTANT_ARRAY.add(arraySize, displayString);         
+            int arraySize = PERSISTENT_ARRAY.size();
+            PERSISTENT_ARRAY.add(arraySize, displayString);         
             
             // Persistant data: if the ArrayList is not empty, save selected file to persistant
             //    note: "true" appends data to files, without "true" it will overwrite
-            if ( PERSISTANT_ARRAY != null ) {
+            if ( PERSISTENT_ARRAY != null ) {
                 try ( PrintWriter out = new PrintWriter(
                                         new BufferedWriter(
-                                        new FileWriter(PERSISTANT_FILE, true)))) {
+                                        new FileWriter(PERSISTENT_FILE, true)))) {
                     out.println(displayString); 
                 } catch (IOException e) {
                     System.err.println("IOEXCEPTION: " + e);
@@ -121,20 +120,16 @@ public class FileMgmt {
     // save file in array for searching with InvertedIndex.java
     public void saveFilePathForSearching(String s) {
     }
-    
-    // write file path to display in maintenance window
-    public static void displayFiles() {                                     // Used in the following places: addFileToIndex(), line 108; 
-        System.out.println("From the displayFile method .......");          //     static initializer, line 64; MaintenanceGui class, line 100
-        for (Iterator<String> it = PERSISTANT_ARRAY.iterator(); it.hasNext();) {
-            String s = it.next();            
-            //print to gui                                                     
-            System.err.println(s);                                          // this is where the file paths/date needs to be sent to the gui
-        }
-    }
+   
+	public static void displayFiles() {
+        for (Iterator<String> it = PERSISTENT_ARRAY.iterator(); it.hasNext();) {
+            String s = it.next();
+            System.out.println(s);
+        }        
+	}
     
     // updates the index to reflect what's currently in the array
     public static void updateIndex() {
-        
     }
     
     // clearing files for new search data
